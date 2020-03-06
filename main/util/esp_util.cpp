@@ -21,6 +21,7 @@
 //#include "esp_pm.h"
 //#include "esp_clk.h"
 //#include "esp_timer.h"
+#include "driver/gpio.h"
 
 #include "log.h"
 

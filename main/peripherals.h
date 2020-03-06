@@ -34,6 +34,8 @@
 #endif
 
 ///// Digital
+// LyraT button defs: https://github.com/espressif/esp-adf/blob/master/components/audio_board/lyrat_v4_3/board_def.h
+#define PIN_BUTTON_MODE GPIO_NUM_39
 
 #ifdef HAVE_STANDBY
 
@@ -85,7 +87,7 @@
 
 // Install ISR service ?
 
-#if defined PIN_BUTTON_STANDBY || defined PIN_SENSOR_VEXT || defined PIN_SENSOR_CHARGING
+#if defined PIN_BUTTON_STANDBY || defined PIN_BUTTON_MODE || defined PIN_SENSOR_VEXT || defined PIN_SENSOR_CHARGING
 
 	#define INSTALL_ISR_SERVICE true
 
@@ -97,7 +99,9 @@
 // Can be a ESP32 board led (it in some boards is 5, anothers is 2)
 // or extern led
 
-#define PIN_LED_STATUS GPIO_NUM_5
+//LyraT board UI LED is on Pin 22
+
+#define PIN_LED_STATUS GPIO_NUM_22
 //#define PIN_LED_STATUS GPIO_NUM_2
 
 /////// Prototypes

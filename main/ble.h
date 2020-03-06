@@ -20,9 +20,9 @@ using namespace std;
 
 /////// Definitions
 
-#define BLE_DEVICE_NAME "Esp32_Device_" // Device name //TODO: see it!
-                                        // Tip: is it ends with _, 
-                                        // last two of the mac address is appended to name
+#define BLE_DEVICE_NAME "bleenky_" // Device name
+                                   // Tip: if it ends with _, 
+                                   // last two of the mac address is appended to name
 ////// Prototypes
 
 extern void bleInitialize();

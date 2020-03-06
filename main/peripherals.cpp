@@ -40,7 +40,7 @@ static const char* TAG = "peripherals";
 #ifdef PIN_LED_STATUS
 // Led status on?
 
-static bool mLedStatusOn = false; 
+// static bool mLedStatusOn = false; 
 #endif
 
 // ADC reading average
@@ -143,6 +143,16 @@ static void gpioInitialize() {
 	gpio_config(&config);
 #endif
 
+#ifdef PIN_BUTTON_MODE
+	config.pin_bit_mask = (1<<PIN_BUTTON_MODE);
+	config.mode         = GPIO_MODE_INPUT;
+	config.pull_up_en   = GPIO_PULLUP_DISABLE;
+	config.pull_down_en = GPIO_PULLDOWN_ENABLE;
+	config.intr_type    = GPIO_INTR_POSEDGE; // Pos edge: low -> high;
+
+	gpio_config(&config);
+#endif
+
 #ifdef PIN_SENSOR_VEXT
 
     // Digital sensor - VEXT - detects an external voltage (USB or power supply)
@@ -188,6 +198,9 @@ static void gpioInitialize() {
 	#ifdef PIN_BUTTON_STANDBY
 		gpio_isr_handler_add (PIN_BUTTON_STANDBY, gpio_isr_handler, (void *) PIN_BUTTON_STANDBY);
 	#endif
+	#ifdef PIN_BUTTON_MODE
+		gpio_isr_handler_add (PIN_BUTTON_MODE, gpio_isr_handler, (void *) PIN_BUTTON_MODE);
+	#endif
 	#ifdef PIN_SENSOR_VEXT
 		gpio_isr_handler_add(PIN_SENSOR_VEXT, gpio_isr_handler, (void*) PIN_SENSOR_VEXT);
 	#endif
@@ -212,7 +225,7 @@ static void gpioInitialize() {
 	gpio_config(&config);
 
 	gpio_set_level(PIN_LED_STATUS, 1);
-	mLedStatusOn = true;
+	// mLedStatusOn = true;
 
 #endif
 
@@ -255,7 +268,7 @@ static void gpioFinalize () {
 
 	gpioSetLevel(PIN_LED_STATUS, 0);
 
-	mLedStatusOn = false;
+	// mLedStatusOn = false;
 #endif
 
 #ifdef INSTALL_ISR_SERVICE
@@ -263,6 +276,10 @@ static void gpioFinalize () {
 
 	#ifdef PIN_BUTTON_STANDBY
 	gpioDisableISR (PIN_BUTTON_STANDBY);
+	#endif
+
+	#ifdef PIN_BUTTON_MODE
+	gpioDisableISR (PIN_BUTTON_MODE);
 	#endif
 
 	#ifdef PIN_SENSOR_VEXT
@@ -285,13 +302,13 @@ static void gpioFinalize () {
 /**
  * @brief Blink the status led
  */
-void gpioBlinkLedStatus() {
+// void gpioBlinkLedStatus() {
 
-	mLedStatusOn = !mLedStatusOn;
+// 	mLedStatusOn = !mLedStatusOn;
 
-	gpioSetLevel(PIN_LED_STATUS, mLedStatusOn);
+// 	gpioSetLevel(PIN_LED_STATUS, mLedStatusOn);
 
-}
+// }
 
 #endif
 
@@ -335,6 +352,28 @@ static void IRAM_ATTR gpio_isr_handler (void * arg) {
 				// Notify main_Task to enter standby - to not do it in ISR
 				
 				notifyMainTask(MAIN_TASK_ACTION_STANDBY_BTN, true);
+			}
+			break;
+#endif
+
+#ifdef PIN_BUTTON_MODE
+		case PIN_BUTTON_MODE: // Mode (OTA now)
+
+			// Debounce
+
+			if (lastGpioNum == PIN_BUTTON_MODE && lastTime > 0) {
+
+				if ((millis() - lastTime) < 50) {
+					ignore=true;
+				}
+
+			}
+
+			if (!ignore) {
+
+				// Notify ota_task to run now
+				
+				notifyOTATask(OTA_TASK_ACTION_CHECK_NOW, true);
 			}
 			break;
 #endif

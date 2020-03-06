@@ -21,7 +21,7 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "freertos/Queue.h"
+#include "freertos/queue.h"
 #include "esp_system.h"
 #include "esp_bt_main.h"
 #include "esp_bt_device.h"

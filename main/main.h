@@ -20,17 +20,16 @@
 #include "soc/soc.h"
 
 #include "sdkconfig.h"
+#include "driver/gpio.h"
 
 // C++
 
+#ifdef __cplusplus
 #include <string>
 using namespace std;
+#endif
 
 /////// Definitions 
-
-// Firmware version
-
-#define FW_VERSION "0.3.0"
 
 // FreeRTOS // TODO: see it!
 
@@ -55,12 +54,6 @@ using namespace std;
 #define TASK_STACK_MEDIUM   5120
 #define TASK_STACK_SMALL    1024
 
-// Task stack Depth 
-
-#define TASK_STACK_LARGE 10240 
-#define TASK_STACK_MEDIUM 5120 
-#define TASK_STACK_SMALL 1024 
-
 // Features configurations // TODO: see it!
 
 // #define HAVE_STANDBY true           // This project have standby (deep sleep) ?
@@ -82,16 +75,22 @@ using namespace std;
 #define MAIN_TASK_ACTION_STANDBY_BTN 	2	// For button -> To enter in deep sleep (to not do it in ISR)
 #define MAIN_TASK_ACTION_STANDBY_MSG 	3	// For msg BLE -> To enter in deep sleep (to not do it in ISR)
 
+#define OTA_TASK_ACTION_NONE            0
+#define OTA_TASK_ACTION_CHECK_NOW       1   // Check for an OTA update now, not 30 seconds from now
+
 #if HAVE_BATTERY
 #define MAIN_TASK_ACTION_SEN_VEXT    	4	// Indicate that value of sensor of external voltage (USB or power supply) is changed (to not do it in ISR)
 //#define MAIN_TASK_ACTION_SEN_CHGR   	5	// Indicate that value of sensor of battery charging is changed (to not do it in ISR)
                                             // this notification not used more - this is done in main_Task
 #endif
 
+#define GPIO_LED CONFIG_BLINK_GPIO
+
 ////// Prototypes of main
 
 extern void appInitialize(bool resetTimerSeconds);
 extern void notifyMainTask(uint32_t action, bool fromISR=false);
+extern void notifyOTATask(uint32_t action, bool fromISR=false);
 extern void processBleMessage(const string& message);
 extern void error(const char* message, bool fatal=false);
 extern void restartESP32();
