@@ -1020,6 +1020,22 @@ void processBleMessage(const string &message)
 	}
 	break;
 
+	case 50: // Set LED Off
+	{
+		logV("Switching LED Off");
+		response = "50:";
+		gpioSetLevel(PIN_LED_STATUS, 0);
+	}
+	break;
+
+	case 51: // Set LED On
+	{
+		logV("Switching LED On");
+		response = "51:";
+		gpioSetLevel(PIN_LED_STATUS, 1);
+	}
+	break;
+
 	case 70: // Echo (for test purpose)
 	{
 		response = message;

@@ -57,6 +57,10 @@ idf4-py build flash monitor
 
 ### 11 Informations about ESP32 device
 
+### 50 LED off
+
+### 51 LED on
+
 ### 70 Echo debug
 
 ### 71 Logging (to activate or not)
